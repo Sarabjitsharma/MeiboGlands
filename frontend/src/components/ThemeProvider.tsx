@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 export const ThemeProvider = ({ children }: { children: ReactNode }) => (
   <NextThemesProvider
     attribute="class"
-    defaultTheme="light"
+    defaultTheme="dark"
     enableSystem={false}
     disableTransitionOnChange={false}
   >

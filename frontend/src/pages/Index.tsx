@@ -52,7 +52,7 @@ const Index = () => {
       <main>
         <Hero onStart={scrollToUpload} />
 
-        <div ref={uploadRef} className="container scroll-mt-20 pb-10">
+        <div id="upload-section" ref={uploadRef} className="container scroll-mt-20 pb-10">
           <div className="mx-auto max-w-4xl">
             <UploadCard onAnalyze={handleAnalyze} />
           </div>
