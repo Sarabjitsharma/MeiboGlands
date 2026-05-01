@@ -12,6 +12,7 @@ type Status = "idle" | "processing" | "done";
 const Index = () => {
   const [status, setStatus] = useState<Status>("idle");
   const [image, setImage] = useState<string | null>(null);
+  const [resultImage, setResultImage] = useState<string | null>(null);
   const uploadRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -26,18 +27,47 @@ const Index = () => {
     if (!meta.parentNode) document.head.appendChild(meta);
   }, []);
 
-  const handleAnalyze = (img: string) => {
+  const handleAnalyze = async (img: string, file: File | null) => {
     setImage(img);
     setStatus("processing");
-    setTimeout(() => setStatus("done"), 2400);
+    setResultImage(null);
+    
     setTimeout(() => {
       document.getElementById("results")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 200);
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      try {
+        const response = await fetch("http://127.0.0.1:8000/infer", {
+          method: "POST",
+          body: formData,
+        });
+        
+        if (response.ok) {
+          const blob = await response.blob();
+          setResultImage(URL.createObjectURL(blob));
+          setStatus("done");
+        } else {
+          console.error("Inference failed");
+          setStatus("idle");
+        }
+      } catch (error) {
+        console.error("Error making inference request", error);
+        setStatus("idle");
+      }
+    } else {
+      // Fallback for sample image if needed
+      setTimeout(() => setStatus("done"), 2400);
+    }
   };
 
   const handleReset = () => {
     setStatus("idle");
     setImage(null);
+    setResultImage(null);
     uploadRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -69,7 +99,7 @@ const Index = () => {
               id="results"
               className="container mx-auto max-w-6xl scroll-mt-20 pb-10"
             >
-              <ResultsView image={image} status={status} onReset={handleReset} />
+              <ResultsView image={image} resultImage={resultImage} status={status} onReset={handleReset} />
               <InsightsPanel loading={status === "processing"} />
             </motion.div>
           )}

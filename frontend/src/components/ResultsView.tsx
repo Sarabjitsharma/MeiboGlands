@@ -3,11 +3,12 @@ import { Eye, EyeOff, Loader2, Download, RefreshCw } from "lucide-react";
 
 interface ResultsViewProps {
   image: string;
+  resultImage?: string | null;
   status: "processing" | "done";
   onReset: () => void;
 }
 
-export const ResultsView = ({ image, status, onReset }: ResultsViewProps) => {
+export const ResultsView = ({ image, resultImage, status, onReset }: ResultsViewProps) => {
   const [showOverlay, setShowOverlay] = useState(true);
 
   const isProcessing = status === "processing";
@@ -54,8 +55,7 @@ export const ResultsView = ({ image, status, onReset }: ResultsViewProps) => {
         <ImagePanel label="Original Capture" image={image} />
         <ImagePanel
           label="Segmentation Overlay"
-          image={image}
-          overlay={showOverlay && !isProcessing}
+          image={showOverlay && resultImage ? resultImage : image}
           processing={isProcessing}
           accent
         />
@@ -67,12 +67,11 @@ export const ResultsView = ({ image, status, onReset }: ResultsViewProps) => {
 interface PanelProps {
   label: string;
   image: string;
-  overlay?: boolean;
   processing?: boolean;
   accent?: boolean;
 }
 
-const ImagePanel = ({ label, image, overlay, processing, accent }: PanelProps) => {
+const ImagePanel = ({ label, image, processing, accent }: PanelProps) => {
   return (
     <div className="overflow-hidden rounded-3xl border border-border bg-gradient-card shadow-card">
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
@@ -101,8 +100,6 @@ const ImagePanel = ({ label, image, overlay, processing, accent }: PanelProps) =
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
 
-        {overlay && <SegmentationOverlay />}
-
         {processing && (
           <>
             <div className="absolute inset-0 bg-background/40 backdrop-blur-[2px]" />
@@ -125,40 +122,3 @@ const ImagePanel = ({ label, image, overlay, processing, accent }: PanelProps) =
     </div>
   );
 };
-
-/** SVG mask of synthetic gland segmentation — purely visual demo. */
-const SegmentationOverlay = () => (
-  <svg
-    className="pointer-events-none absolute inset-0 h-full w-full mix-blend-screen"
-    viewBox="0 0 400 300"
-    preserveAspectRatio="none"
-  >
-    <defs>
-      <linearGradient id="glandGrad" x1="0" x2="0" y1="0" y2="1">
-        <stop offset="0%" stopColor="hsl(172 80% 60%)" stopOpacity="0.95" />
-        <stop offset="100%" stopColor="hsl(221 90% 70%)" stopOpacity="0.85" />
-      </linearGradient>
-    </defs>
-    {Array.from({ length: 22 }).map((_, i) => {
-      const x = 30 + i * 16 + (i % 2) * 2;
-      const h = 90 + Math.sin(i * 0.7) * 35 + (i % 3) * 8;
-      const skip = i === 7 || i === 14 || i === 18;
-      if (skip) return null;
-      return (
-        <rect
-          key={i}
-          x={x}
-          y={120 - h / 2 + 30}
-          width={9}
-          height={h}
-          rx={4}
-          fill="url(#glandGrad)"
-          opacity={0.7 + (i % 3) * 0.1}
-          style={{
-            animation: `fade-up 0.6s ease-out ${i * 0.03}s both`,
-          }}
-        />
-      );
-    })}
-  </svg>
-);

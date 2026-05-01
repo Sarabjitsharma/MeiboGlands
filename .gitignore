@@ -2,3 +2,5 @@ __pycache__/
 *.pth
 .venv
 outputs/
+.vscode/
+uploads/

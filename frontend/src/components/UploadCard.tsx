@@ -3,7 +3,7 @@ import { UploadCloud, Image as ImageIcon, Sparkles, AlertCircle, X } from "lucid
 import sampleEyelid from "@/assets/sample-eyelid.jpg";
 
 interface UploadCardProps {
-  onAnalyze: (imageUrl: string) => void;
+  onAnalyze: (imageUrl: string, file: File | null) => void;
 }
 
 export const UploadCard = ({ onAnalyze }: UploadCardProps) => {
@@ -12,6 +12,7 @@ export const UploadCard = ({ onAnalyze }: UploadCardProps) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
+  const [fileObj, setFileObj] = useState<File | null>(null);
 
   const handleFile = useCallback((file: File) => {
     setError(null);
@@ -26,6 +27,7 @@ export const UploadCard = ({ onAnalyze }: UploadCardProps) => {
     const url = URL.createObjectURL(file);
     setPreview(url);
     setFileName(file.name);
+    setFileObj(file);
   }, []);
 
   const onDrop = (e: React.DragEvent) => {
@@ -39,12 +41,14 @@ export const UploadCard = ({ onAnalyze }: UploadCardProps) => {
     setPreview(sampleEyelid);
     setFileName("sample-eyelid.jpg");
     setError(null);
+    setFileObj(null);
   };
 
   const reset = () => {
     setPreview(null);
     setFileName("");
     setError(null);
+    setFileObj(null);
   };
 
   return (
@@ -148,7 +152,7 @@ export const UploadCard = ({ onAnalyze }: UploadCardProps) => {
         </p>
         <button
           disabled={!preview}
-          onClick={() => preview && onAnalyze(preview)}
+          onClick={() => preview && onAnalyze(preview, fileObj)}
           className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-card transition-all hover:shadow-elevated disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:shadow-card"
         >
           <Sparkles className="h-4 w-4 transition-transform group-hover:rotate-12" />
