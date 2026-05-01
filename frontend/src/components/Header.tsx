@@ -1,4 +1,4 @@
-import { Eye } from "lucide-react";
+import { Eye, User } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
 export const Header = () => {
@@ -21,31 +21,31 @@ export const Header = () => {
         </div>
 
         <nav className="hidden items-center gap-1 md:flex">
-          {["Dashboard", "Analyze", "Reports"].map((item, i) => (
+          {[
+            { name: "Dashboard", href: "#" },
+            { name: "Analyze", href: "#upload-section" },
+            { name: "Reports", href: "#" }
+          ].map((item, i) => (
             <a
-              key={item}
-              href="#"
+              key={item.name}
+              href={item.href}
               className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${i === 0
                 ? "bg-primary-soft text-primary"
                 : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                 }`}
             >
-              {item}
+              {item.name}
             </a>
           ))}
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3">
           <ThemeToggle />
-          <div className="hidden text-right sm:block">
-            <p className="text-sm font-semibold text-foreground">Dr. A. Karimov</p>
-            <p className="text-xs text-muted-foreground">Ophthalmology</p>
-          </div>
           <button
             aria-label="Profile"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-primary text-sm font-bold text-primary-foreground ring-1 ring-border transition-all hover:shadow-glow"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-secondary-foreground ring-1 ring-border transition-all hover:bg-secondary/80"
           >
-            AK
+            <User className="h-5 w-5" />
           </button>
         </div>
       </div>
