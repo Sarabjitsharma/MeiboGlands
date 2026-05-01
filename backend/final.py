@@ -1,8 +1,9 @@
+import torch
+import torch.nn as nn
 import os
 import cv2
 import numpy as np
-import torch
-import torch.nn as nn
+
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 from eval import AttentionUNet  # your AttentionUNet import
@@ -198,10 +199,10 @@ def run_pipeline(
     cv2.imwrite(os.path.join(output_dir, "overlay_unet.png"), overlay_unet)
 
 
-if __name__ == "__main__":
-    run_pipeline(
-        image_path=r"D:\Computer Science\Projects\Meibo API\Original Images\DMI_OD_LOWER_REFLECTED_IR_447359.JPG",
-        attunet_weights_path="Final.pth",
-        unet_weights_path="unet_meibo.pth",
-        output_dir="outputs"
-    )
+# if __name__ == "__main__":
+#     run_pipeline(
+#         image_path=r"D:\Computer Science\Projects\Meibo API\Original Images\DMI_OD_LOWER_REFLECTED_IR_447359.JPG",
+#         attunet_weights_path="Final.pth",
+#         unet_weights_path="unet_meibo.pth",
+#         output_dir="outputs"
+#     )
